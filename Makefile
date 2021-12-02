@@ -1,4 +1,4 @@
-GCCPARAMS = -m32 -W -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore
+GCCPARAMS = -m32 -O2 -W -fno-use-cxa-atexit -fno-stack-protector -ffreestanding -nostdlib -fno-builtin -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore
 ASPPARAMS = --32
 LDPARAMS = -melf_i386
 GCC = g++
@@ -8,7 +8,7 @@ CFLAGS = -o $@ -c $<
 ASMFLAGS = -o $@ $<
 LINKERFLAGS = -T $< -o $@ 
 
-objects = boot.o kernel.o
+objects = boot.o kernel.o x86.o
 
 %.o: %.cc
 	$(GCC) $(GCCPARAMS) $(CFLAGS)
@@ -45,3 +45,6 @@ kernel.iso: kernel.bin
 
 qemu: kernel.iso
 	qemu-system-x86_64 kernel.iso
+
+qemu-gdb: kernel.iso
+	qemu-system-x86_64 -s -S kernel.iso
