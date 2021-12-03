@@ -7,11 +7,12 @@
 	.long FLAGS
 	.long CHECKSUM
 .section .text
-.extern kernel_main
+.extern kernel_main,system_constructors
 .global laoder
 
 loader:
 	mov $kernel_stack, %esp
+	call system_constructors
 	push %eax
 	push %ebx
 	call kernel_main
