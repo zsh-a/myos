@@ -2,7 +2,8 @@
 
 extern "C" {
 
-GdtDesc kgdt[GDTSIZE];
+Gdtr kgdtr;
+GdtDesc* kgdt = (GdtDesc*)GDTBASE;
 
 inline GdtDesc new_gdt_desc(u32 base, u32 limit, u8 access, u8 other) {
   return GdtDesc{.lim0_15 = limit & 0xffff,
@@ -15,7 +16,13 @@ inline GdtDesc new_gdt_desc(u32 base, u32 limit, u8 access, u8 other) {
 }
 
 void init_gdt() {
-    kgdt[0] = new_gdt_desc(0,0,0,0);
-    kgdt[1] = new_gdt_desc(0,3,4,12);
+  kgdt[0] = new_gdt_desc(0, 0, 0, 0);
+  kgdt[1] = new_gdt_desc(0x0, 0xFFFFF, 0x9B, 0x0D);
+  kgdt[2] = new_gdt_desc(0x0, 0xFFFFF, 0x93, 0x0D);
+  kgdt[3] = new_gdt_desc(0x0, 0x0, 0x97, 0x0D);
+
+  kgdtr.limit = GDTSIZE * 8;
+  kgdtr.base = GDTBASE;
+  asm volatile("lgdtl (kgdtr)");
 }
 }

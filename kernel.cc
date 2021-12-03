@@ -1,6 +1,7 @@
+#include "io.h"
 #include "types.h"
 #include "x86.h"
-extern "C" void printf(char *str) {
+extern "C" void printf(const char *str) {
   u16 *monitor_io_memory = reinterpret_cast<u16 *>(
       0xb8000);  //注意！重点来啦！0xb8000内存地址是显示器地址，往这里写数据就直接能够输出到屏幕上
   for (int i = 0; str[i] != '\0'; ++i) {
